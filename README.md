@@ -9,6 +9,8 @@ A workbench for Data Science powered by Jupyter and Docker which includes:
 
 ![VNode in action](vnode_ss.png)
 
+In many ways, VNode can be thought of as a distribution of the amazing [Project Jupyter](http://jupyter.org/), which attempts to incorporate some helpful conveniences in an extensible way.
+
 With VNode you can build models locally, connect with your corporate
 data sources, and collaborate with your team. If you need additional
 resources you can easily use Spark, Hadoop, anything that can be
