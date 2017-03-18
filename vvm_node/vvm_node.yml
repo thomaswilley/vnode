@@ -1,0 +1,125 @@
+# Copyright (c) @thomaswilley, 2017
+#   services base_notebook and minimal_notebook build locally overridden
+#   versions of the public ones which mostly is so VVM_USER account overrides
+#   default (jovyan).
+version: "2"
+
+services:
+
+  base_notebook:
+    build:
+      context: vvm_notebook/docker-stacks/base-notebook
+      args:
+        VVM_USER: $VVM_USER
+        VVM_HOME_PATH: $VVM_VIVITICS_HOME_PATH
+    image: jupyter/base-notebook
+    volumes:
+      - "work:/home/${VVM_USER}/work"
+    command: /bin/true
+
+  minimal_notebook:
+    depends_on:
+      - base_notebook
+    build:
+      context: vvm_notebook/docker-stacks/minimal-notebook
+      args:
+        VVM_USER: $VVM_USER
+        VVM_HOME_PATH: $VVM_VIVITICS_HOME_PATH
+    image: jupyter/minimal-notebook
+    volumes:
+      - "work:/home/${VVM_USER}/work"
+    command: /bin/true
+
+  scipy_notebook:
+    depends_on:
+      - minimal_notebook
+    build:
+      context: vvm_notebook/docker-stacks/scipy-notebook
+      args:
+        VVM_USER: $VVM_USER
+        VVM_HOME_PATH: $VVM_VIVITICS_HOME_PATH
+    image: jupyter/scipy-notebook
+    volumes:
+      - "work:/home/${VVM_USER}/work"
+    command: /bin/true
+
+  notebook:
+    depends_on:
+      - base_notebook
+      - minimal_notebook
+      - scipy_notebook
+    build:
+      context: vvm_notebook/docker-stacks/$VVM_JUPYTERDSIMAGE
+      args:
+        VVM_USER: $VVM_USER
+        VVM_HOME_PATH: $VVM_VIVITICS_HOME_PATH
+    image: vvm_notebook
+    container_name: vvm_notebook
+    volumes:
+      - "work:/home/${VVM_USER}/work"
+      - "dropbox:/home/${VVM_USER}/work"
+      - "public:/home/${VVM_USER}/public"
+      - "public:/home/${VVM_USER}/work/_Vivitics/_Public"
+    ports:
+      - "${VVM_PORT}:8888"
+    environment:
+      - USE_HTTPS=yes
+      - TERM=xterm-256color
+
+  blogprocessor:
+    build:
+      context: vvm_blogprocessor
+      args:
+        VVM_USER: $VVM_USER
+        VVM_HOME_PATH: $VVM_VIVITICS_HOME_PATH
+    image: vvm_blogprocessor
+    container_name: vvm_blogprocessor
+    volumes_from: [notebook]
+    environment:
+      - NB_USER=$VVM_USER
+      - VVM_HOME=$VVM_VIVITICS_HOME_PATH
+      - VVM_HOME_BLOG=$VVM_VIVITICS_HOME_PATH/_Blog
+      - VVM_PUBLIC_PATH=/home/$VVM_USER/public
+
+  vvm_nginx:
+    build:
+      context: vvm_nginx
+      args:
+        VVM_USER: $VVM_USER
+        VVM_HOME_PATH: $VVM_VIVITICS_HOME_PATH
+    image: vvm_nginx
+    container_name: vvm_nginx
+    volumes_from: [notebook]
+    volumes:
+      - "public:/usr/share/nginx/html:ro"
+    ports:
+      - "80:80"
+    environment:
+      - NB_HOST=192.168.99.100
+      - NB_PORT=$VVM_PORT
+    command: /bin/bash -c "envsubst '$$NB_HOST $$NB_PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+
+  dropbox:
+    build:
+      context: vvm_dropbox
+      args:
+        VVM_USER: $VVM_USER
+        VVM_HOME_PATH: $VVM_VIVITICS_HOME_PATH
+    image: vvm_dropbox
+    container_name: vvm_dropbox
+    volumes:
+      - "dropbox:/dropbox"
+    environment:
+      - DROPBOX_USER=$VVM_USER
+      - DROPBOX_UID=1000
+
+volumes:
+  public:
+    external:
+      name: $VVM_PUBLIC_VOLUME
+  work:
+    external:
+      name: $VVM_WORK_VOLUME
+  dropbox:
+    external:
+      name: $VVM_DROPBOX_VOLUME
