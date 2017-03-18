@@ -7,9 +7,9 @@ A workbench for Data Science powered by Jupyter and Docker which includes:
 - Built-in Markdown-based static blog using Pelican
 - Out of the box integration with VMWare and most public cloud providers
 
-![VNode in action](vnode_ss.png)
-
 In many ways, VNode can be thought of as a distribution of the amazing [Project Jupyter](http://jupyter.org/) wherein VNode aims to incorporate some little conveniences in an extensible way.
+
+![VNode in action](vnode_ss.png)
 
 With VNode you can build models locally, connect with your corporate
 data sources, and collaborate with your team. If you need additional
