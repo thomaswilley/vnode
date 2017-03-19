@@ -5,6 +5,7 @@ A workbench for Data Science powered by Jupyter and Docker which includes:
 - Customized Jupyter notebook
 - Dropbox integration for data persistence
 - Built-in Markdown-based static blog using Pelican
+- pgAdmin4 web app for SQL integration with Postgres / Greenplum
 - Out of the box integration with VMWare and most public cloud providers
 
 In many ways, VNode can be thought of as a distribution of the amazing [Project Jupyter](http://jupyter.org/) wherein VNode aims to incorporate some little conveniences in an extensible way.
