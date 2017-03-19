@@ -24,8 +24,7 @@ RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
       apt-get update -y && apt-get install vim -y
 
 # install pgadmin4 v1.3
-#ADD https://ftp.postgresql.org/pub/pgadmin3/pgadmin4/v1.3/pip/pgadmin4-1.3-py2.py3-none-any.whl $APP_INSTALLLOC
-COPY pgadmin4-1.3-py2.py3-none-any.whl $APP_INSTALLLOC
+ADD https://ftp.postgresql.org/pub/pgadmin3/pgadmin4/v1.3/pip/pgadmin4-1.3-py2.py3-none-any.whl $APP_INSTALLLOC
 RUN cd $APP_INSTALLLOC && \
       pip install pgadmin4-1.3-py2.py3-none-any.whl
 
