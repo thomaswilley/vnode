@@ -2,13 +2,12 @@ server {
   listen       80;
   server_name  localhost;
 
-  location / {
-    alias /usr/share/nginx/html/;
-    index index.html index.htm;
-  }
-
   client_max_body_size 50M;
   error_log /var/log/nginx/error.log;
+
+  location /pg/ { # this block doesnt work yet; need to find simple way to add a global url prefix to pgAdmin...
+    proxy_pass http://$NB_HOST:5051/;
+  }
 
   location /nb {
     proxy_pass http://$NB_HOST:$NB_PORT;
@@ -34,4 +33,10 @@ server {
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
   }
+
+  location / {
+    alias /usr/share/nginx/html/;
+    index index.html index.htm;
+  }
+
 }

@@ -27,6 +27,7 @@ $('<li class="pure-menu-item"><a href="/" class="pure-menu-link">Site</a></li>')
 $('<li class="pure-menu-item"><a href="/nb/tree/_Vivitics/_Blog" class="pure-menu-link">Posts</a></li>').appendTo('.pure-menu-list');
 /* shortcuts */
 $('<li class="pure-menu-item"><a href="javascript:gotoDropbox()" class="pure-menu-link">Dropbox</a></li>').appendTo('.pure-menu-list');
+$('<li class="pure-menu-item"><a href=":5051/" target="_blank" class="pure-menu-link">pgAdmin4</a></li>').appendTo('.pure-menu-list');
 /* logout */
 $('<li class="pure-menu-item"><a href="javascript:$(\'button[id=logout]\').click()" class="pure-menu-link">Logout</a></li>').appendTo('.pure-menu-list');
 
@@ -105,3 +106,22 @@ $("a[title=dashboard]").parent().hide();
     };
 
 }(this, this.document));
+
+/*
+ * relative link patch care of http://stackoverflow.com/questions/6016120/relative-url-to-a-different-port-number-in-a-hyperlink/6016361#6016361
+ * <a href=":8080/test/blah">Test absolute</a>
+ * <a href=":7051./test/blah">Test relative</a>
+ */
+// delegate event for performance, and save attaching a million events to each anchor
+document.addEventListener('click', function(event) {
+  var target = event.target;
+  if (target.tagName.toLowerCase() == 'a')
+  {
+      var port = target.getAttribute('href').match(/^:(\d+)(.*)/);
+      if (port)
+      {
+         target.href = port[2];
+         target.port = port[1];
+      }
+  }
+}, false);
