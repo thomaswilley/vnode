@@ -113,6 +113,17 @@ services:
       - DROPBOX_USER=$VVM_USER
       - DROPBOX_UID=1000
 
+  pgadmin4:
+    build:
+      context: vvm_pgadmin
+      args:
+        - VVM_USER=$VVM_USER
+        - VVM_HOME_PATH=$VVM_VIVITICS_HOME_PATH
+    image: vvm_pgadmin
+    container_name: vvm_pgadmin
+    ports:
+      - "5051:5051"
+
 volumes:
   public:
     external:
