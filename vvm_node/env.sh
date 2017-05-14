@@ -17,7 +17,7 @@ export VVM_NAME
 export VVM_JUPYTERDSIMAGE
 
 # Default port
-: "${VVM_PORT:=8001}"
+: "${VVM_PORT:=8888}"
 export VVM_PORT
 
 # Container work volume name

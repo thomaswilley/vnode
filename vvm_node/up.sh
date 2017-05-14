@@ -67,7 +67,13 @@ docker volume create --name "$VVM_DROPBOX_VOLUME"
 echo "Bringing up VVM Node '$NAME'"
 docker-compose -f "$DIR/$CONFIG" -p "$NAME" up -d
 
-IP=$(docker-machine ip $(docker-machine active))
+if IP=$(docker-machine ip $(docker-machine active) 2>&1 ) ; then
+  echo "using docker-machine..."
+else
+  echo "using docker-compose only..."
+  IP=localhost
+fi
+
 echo "Vivitics VirtualMachine Node $NAME running at $IP. Now obtaining token..."
 
 # obtain the live token generated on start up and pull into evar
